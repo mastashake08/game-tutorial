@@ -74068,6 +74068,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       that.scene.render();
     });
     console.log('Component mounted.');
+
+    // the canvas/window resize event handler
+    window.addEventListener('resize', function () {
+      this.engine.resize();
+    });
   },
   data: function data() {
     return {
@@ -74087,44 +74092,39 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     createSkyBox: function createSkyBox() {
-      this.skybox = BABYLON.Mesh.CreateBox("skyBox", 1000.0, this.scene);
+      this.skybox = BABYLON.Mesh.CreateBox("skyBox", 250.0, this.scene);
       this.skyboxMaterial = new BABYLON.StandardMaterial("skyBox", this.scene);
       this.skyboxMaterial.backFaceCulling = false;
+      this.skyboxMaterial.disableLighting = true;
+      this.skybox.material = this.skyboxMaterial;
+      this.skybox.infiniteDistance = true;
+      this.skyboxMaterial.disableLighting = true;
       this.skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("skybox/skybox", this.scene);
       this.skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-      this.skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-      this.skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-      this.skybox.material = this.skyboxMaterial;
     },
     createScene: function createScene() {
       // Create a basic BJS Scene object
       var scene = new BABYLON.Scene(this.engine);
+      scene.clearColor = new BABYLON.Color3(0.5, 0.8, 0.5);
+      scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
+      scene.createDefaultEnvironment();
+
       // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
-      this.camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(0, 10, -10), scene);
+      this.camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(10, 10, -10), scene);
       // Target the camera to scene origin
       this.camera.setTarget(BABYLON.Vector3.Zero());
       // Attach the camera to the canvas
       this.camera.attachControl(this.canvas, false);
       // Create a basic light, aiming 0, 1, 0 - meaning, to the sky
       this.light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
-      /*  // Create a built-in "sphere" shape; its constructor takes 6 params: name, segment, diameter, scene, updatable, sideOrientation
-        this.sphere = BABYLON.Mesh.CreateSphere('sphere1', 16, 2, scene, false, BABYLON.Mesh.FRONTSIDE);
-        // Move the sphere upward 1/2 of its height
-        this.sphere.position.y = 1;
-        */ // Create a built-in "ground" shape; its constructor takes 6 params : name, width, height, subdivision, scene, updatable
-      this.ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "heightmap.jpg", 200, 200, 250, 0, 10, scene, false, this.successCallback);
+
+      // Create a built-in "ground" shape; its constructor takes 6 params : name, width, height, subdivision, scene, updatable
+      this.ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "heightmap.jpg", 2048, 1024, 250, 0, 10, scene, false, this.successCallback);
 
       return scene;
     },
     createMaterial: function createMaterial() {
-      var myMaterial = new BABYLON.StandardMaterial("myMaterial", this.scene);
 
-      myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
-      myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-      myMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-      myMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
-
-      this.sphere.material = myMaterial;
       this.groundMaterial = new BABYLON.StandardMaterial("ground", this.scene);
       this.groundMaterial.diffuseTexture = new BABYLON.Texture("earth_land.jpg", this.scene);
 
@@ -74137,13 +74137,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.scene.collisionsEnabled = true;
       this.camera.checkCollisions = true;
       this.ground.checkCollisions = true;
-      /*this.sphere.checkCollisions = true;
-      if(this.sphere.intersectsMesh(this.camera,false)){
-        this.sphere.material.emissiveColor = new BABYLON.Color4(0, 0, 0, 0);
-      }
-      else {
-        this.sphere.material.emissiveColor = new BABYLON.Color4(1, 1, 1, 1);
-      }*/
     },
     successCallback: function successCallback(mesh) {},
     beforeRenderFunction: function beforeRenderFunction() {
@@ -74156,13 +74149,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
 
   },
-  created: function created() {
-
-    // the canvas/window resize event handler
-    window.addEventListener('resize', function () {
-      this.engine.resize();
-    });
-  }
+  created: function created() {}
 });
 
 /***/ }),
