@@ -72,7 +72,7 @@
             this.light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
 
           // Create a built-in "ground" shape; its constructor takes 6 params : name, width, height, subdivision, scene, updatable
-            this.ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "heightmap.jpg",  2048, 1024, 250, 0, 10, scene, false, this.successCallback);
+            this.ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "other-heightmap.png",  200, 200, 250, 0, 10, scene, false, this.successCallback);
 
             return scene;
 
